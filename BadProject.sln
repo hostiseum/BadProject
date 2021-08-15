@@ -11,6 +11,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BetterProject.Tests", "Bett
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BetterProject", "BetterProject\BetterProject.csproj", "{776F3755-379A-4BF5-8906-EA9D6DE1A678}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BetterProject.Client", "BetterProject.Client\BetterProject.Client.csproj", "{3C8EB18F-8601-4886-89A2-7EAE709E64D4}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,6 +35,10 @@ Global
 		{776F3755-379A-4BF5-8906-EA9D6DE1A678}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{776F3755-379A-4BF5-8906-EA9D6DE1A678}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{776F3755-379A-4BF5-8906-EA9D6DE1A678}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3C8EB18F-8601-4886-89A2-7EAE709E64D4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3C8EB18F-8601-4886-89A2-7EAE709E64D4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3C8EB18F-8601-4886-89A2-7EAE709E64D4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3C8EB18F-8601-4886-89A2-7EAE709E64D4}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

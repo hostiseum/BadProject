@@ -51,50 +51,56 @@ namespace Adv
         {
             Advertisement adv = null;
 
-            lock (lockObj)
+            // Use Cache if available
+            adv = (Advertisement)_memoryCacheService.Get(id);
+
+            if (adv != null)
             {
-                // Use Cache if available
-                adv = (Advertisement)_memoryCacheService.Get(id);
+                Console.WriteLine($"Found the advert in MemCache : {id}");
+                return adv;
+            }
 
-                if (adv != null)
-                    return adv;
+            var errorCount = _queueService.GetErrorsCount(_configurationService.GetSetting<int>("DurationInHours"), 
+                                                     _configurationService.GetSetting<int>("MaxErrorsTolerance"));
 
-                var errorCount = _queueService.GetErrors(1, 20);
-
-                // If Cache is empty and ErrorCount<10 then use HTTP provider
-                if (errorCount < 10)
+            // If Cache is empty and ErrorCount<10 then use HTTP provider
+            if (errorCount < 10)
+            {
+                int retry = 0;
+                while(retry < _configurationService.GetSetting<int>("RetryCount"))
                 {
-                    int retry = 0;
-                    while(retry < _configurationService.GetSetting<int>("RetryCount"))
-                    {
                         
-                        try
-                        {
-                            adv = _noSqlProvider.GetAdv(id);
+                    try
+                    {
+                        adv = _noSqlProvider.GetAdv(id);
 
-                            if (adv != null)
-                                break;
-                        }
-                        catch
+                        if (adv != null)
                         {
-                            Thread.Sleep(1000); //Do we need this Thread.Sleep for each iteration?; Try to avoid if we can avoid Thread.Sleep
-                            _queueService.Enqueue(DateTime.Now); // Store HTTP error timestamp              
+                            Console.WriteLine($"Advert retrieved from NoSql : SUCCESS: {id}");
+                            break;
                         }
+                    }
+                    catch
+                    {
+                        Thread.Sleep(1000); //Do we need this Thread.Sleep for each iteration?; Try to avoid if we can avoid Thread.Sleep
+                        _queueService.Enqueue(DateTime.Now); // Store HTTP error timestamp              
+                    }
 
-                        retry++;
-                    } 
+                    retry++;
+                } 
                    
-                }
-                else
-                { 
-                    // if needed try to use Backup provider
-                    adv = _sqlProvider.GetAdv(id);
-                }
+            }
 
-                if (adv != null)
-                {
-                    _memoryCacheService.Set(id, adv, DateTimeOffset.Now.AddMinutes(5));
-                }
+            if (adv == null)
+            {
+                // if needed try to use Backup provider
+                adv = _sqlProvider.GetAdv(id);
+            }
+            
+            if (adv != null)
+            {
+                Console.WriteLine($"Adding the advert to cache first time :  {id}");
+                _memoryCacheService.Set(id, adv, DateTimeOffset.Now.AddMinutes(5));
             }
 
             return adv;

@@ -21,13 +21,13 @@ namespace BetterProject.Tests
             Mock<INoSqlProvider> mockNoSqlProvider = new Mock<INoSqlProvider>();
             Mock<ISqlProvider> mockSqlProvider = new Mock<ISqlProvider>();
 
-            AdvertisementService adv = new AdvertisementService(mockConfigurationService.Object, 
+            AdvertisementService adv = new AdvertisementService(mockConfigurationService.Object,
                                                                 mockMemoryCacheService.Object,
                                                                 mockQueueService.Object,
                                                                 mockNoSqlProvider.Object,
                                                                 mockSqlProvider.Object);
 
-            
+
 
         }
 
@@ -87,7 +87,7 @@ namespace BetterProject.Tests
         }
 
         [Theory]
-        [InlineData(1,2)]
+        [InlineData(1, 2)]
         [InlineData(11, 2)]
         public void MemoryCacheService_ReturnsNull_NoSqlProvider_ReturnsAdvertisement(int errors, int retryCount)
         {
@@ -96,12 +96,39 @@ namespace BetterProject.Tests
             Mock<IQueueService> mockQueueService = new Mock<IQueueService>();
             Mock<INoSqlProvider> mockNoSqlProvider = new Mock<INoSqlProvider>();
             Mock<ISqlProvider> mockSqlProvider = new Mock<ISqlProvider>();
-            
+
             mockConfigurationService.Setup((c) => c.GetSetting<int>("RetryCount")).Returns(() => retryCount);
             mockMemoryCacheService.Setup((m) => m.Get(It.IsAny<string>())).Returns(It.IsAny<Advertisement>());
-            mockQueueService.Setup((q) => q.GetErrors(It.IsAny<int>(), It.IsAny<int>())).Returns(() => errors);
+            mockQueueService.Setup((q) => q.GetErrorsCount(It.IsAny<int>(), It.IsAny<int>())).Returns(() => errors);
             mockNoSqlProvider.Setup((n) => n.GetAdv(It.IsAny<string>())).Returns(new Advertisement());
-            
+            mockSqlProvider.Setup((s) => s.GetAdv(It.IsAny<string>())).Returns(new Advertisement());
+
+            AdvertisementService adv = new AdvertisementService(mockConfigurationService.Object,
+                                                                mockMemoryCacheService.Object,
+                                                                mockQueueService.Object,
+                                                                mockNoSqlProvider.Object,
+                                                                mockSqlProvider.Object);
+
+            Assert.NotNull(adv.GetAdvertisement(It.IsAny<string>()));
+        }
+
+        [Theory]
+        [InlineData(1, 2)]
+        [InlineData(11, 2)]
+        public void AdvertNotFoundInCache_NoSqlProvider_ThrowsException_SqlProviderReturnsData(int errors, int retryCount)
+        {
+            Mock<IConfigurationService> mockConfigurationService = new Mock<IConfigurationService>();
+            Mock<IMemoryCacheService> mockMemoryCacheService = new Mock<IMemoryCacheService>();
+            Mock<IQueueService> mockQueueService = new Mock<IQueueService>();
+            Mock<INoSqlProvider> mockNoSqlProvider = new Mock<INoSqlProvider>();
+            Mock<ISqlProvider> mockSqlProvider = new Mock<ISqlProvider>();
+
+            mockConfigurationService.Setup((c) => c.GetSetting<int>("RetryCount")).Returns(() => retryCount);
+            mockMemoryCacheService.Setup((m) => m.Get(It.IsAny<string>())).Returns(It.IsAny<Advertisement>());
+            mockQueueService.Setup((q) => q.GetErrorsCount(It.IsAny<int>(), It.IsAny<int>())).Returns(() => errors);
+            mockNoSqlProvider.Setup((n) => n.GetAdv(It.IsAny<string>())).Throws(It.IsAny<Exception>());
+            mockSqlProvider.Setup((s) => s.GetAdv(It.IsAny<string>())).Returns(new Advertisement());
+
             AdvertisementService adv = new AdvertisementService(mockConfigurationService.Object,
                                                                 mockMemoryCacheService.Object,
                                                                 mockQueueService.Object,

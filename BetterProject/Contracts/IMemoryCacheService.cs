@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Runtime.Caching;
 using ThirdParty;
 
 namespace BetterProject
@@ -7,6 +8,6 @@ namespace BetterProject
     {
          Advertisement Get(string key);
          void Set(string key, Advertisement adv, DateTimeOffset expiryTime);
-
+         MemoryCache GetCurrentCache();
     }
 }

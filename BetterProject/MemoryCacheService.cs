@@ -8,12 +8,13 @@ namespace BetterProject
 {
     public class MemoryCacheService : IMemoryCacheService
     {
-        private  static MemoryCache cache = new MemoryCache("");
+        //MemCache is ThreadSafe
+        private MemoryCache cache = new MemoryCache("AdvertCache");
         private const string keyFormat = "AdvKey_{0}";
 
-        public MemoryCacheService()
-        {
-
+        public MemoryCacheService() { }
+        public MemoryCache GetCurrentCache() {
+            return cache;
         }
 
         public Advertisement Get(string key)
