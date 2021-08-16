@@ -24,10 +24,13 @@ namespace Adv
     //
     // 3. If it can't retrive the data or the ErrorCount in the last hour is more than 10, 
     //    it uses the SqlDataProvider (backupProvider)
+    //*****************************************************
+    // Developer : Kalyana Medavarapu
+    // Notes : All the Console.Writelines should be replaced by logger
+    //*****************************************************
     public class AdvertisementService : IAdvertisementService
     {
-        //private static MemoryCache cache = new MemoryCache("");
-        private Object lockObj = new Object();
+        
 
         private IMemoryCacheService _memoryCacheService;
         private IQueueService _queueService;
@@ -56,6 +59,7 @@ namespace Adv
 
             if (adv != null)
             {
+                //All the Console.Writelines in this project should be replaced by logger 
                 Console.WriteLine($"Found the advert in MemCache : {id}");
                 return adv;
             }
