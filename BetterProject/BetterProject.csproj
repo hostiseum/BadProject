@@ -76,7 +76,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AdvertisementService.cs" />
-    <Compile Include="ConfigurationService.cs" />
+    <Compile Include="Services\ConfigurationService.cs" />
     <Compile Include="Contracts\IAdvertisementService.cs" />
     <Compile Include="Contracts\IConfigurationService.cs" />
     <Compile Include="Contracts\IDataStoreProvider.cs" />
@@ -84,11 +84,11 @@
     <Compile Include="Contracts\INoSqlProvider.cs" />
     <Compile Include="Contracts\IQueueService.cs" />
     <Compile Include="Contracts\ISqlProvider.cs" />
-    <Compile Include="MemoryCacheService.cs" />
+    <Compile Include="Services\MemoryCacheService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Providers\NoSqlProvider.cs" />
     <Compile Include="Providers\SqlProvider.cs" />
-    <Compile Include="QueueService.cs" />
+    <Compile Include="Services\QueueService.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\ThirdParty\ThirdParty.csproj">
